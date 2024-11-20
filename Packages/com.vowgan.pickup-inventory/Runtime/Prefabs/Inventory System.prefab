@@ -2969,6 +2969,8 @@ MonoBehaviour:
   SpawnPoint: {fileID: 4066519498715199148}
   CanvasVisibleChecker: {fileID: 8456490655888559918}
   Inserter: {fileID: 2651626685407225918}
+  InventoryItemPrefab: {fileID: 5810175872034150792, guid: 0a99b2ee97891214ba9a9e2486425214,
+    type: 3}
   MenuContainer: {fileID: 4066519497575425434}
   SearchingField: {fileID: 7303701061361390717}
   SortingDropdown: {fileID: 4175591427541684335}

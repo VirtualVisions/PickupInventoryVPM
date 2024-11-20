@@ -1,9 +1,5 @@
-﻿
-using System;
-using UdonSharp;
-using UnityEngine;
+﻿using UdonSharp;
 using VRC.SDKBase;
-using VRC.Udon;
 
 namespace Vowgan.Inventory
 {

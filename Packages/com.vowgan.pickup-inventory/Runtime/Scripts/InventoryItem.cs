@@ -19,43 +19,49 @@ namespace Vowgan.Inventory
         public float StoredTimestamp;
         public bool JustSpawned;
 
-        protected GameObject PickupObj;
-        protected Rigidbody Rb;
-        protected bool StartsKinematic;
+        protected GameObject m_pickupObj;
+        protected Rigidbody m_rigidbody;
+        protected bool m_startsKinematic;
+        protected bool m_initialized;
         
         
         private void Start()
         {
-            _Init();
+            if (!m_initialized) _Init();
         }
-        
-        public virtual void _Init()
+
+        protected virtual void _Init()
         {
-            Rb = Pickup.GetComponent<Rigidbody>();
-            StartsKinematic = Rb.isKinematic;
-            PickupObj = Pickup.gameObject;
+            m_initialized = true;
+            m_rigidbody = Pickup.GetComponent<Rigidbody>();
+            m_startsKinematic = m_rigidbody.isKinematic;
+            m_pickupObj = Pickup.gameObject;
         }
 
         public virtual void _Spawn(Transform point)
         {
+            if (!m_initialized) _Init();
+            
             JustSpawned = true;
             Pickup.transform.SetPositionAndRotation(point.position, point.rotation);
-            PickupObj.SetActive(true);
-            Rb.isKinematic = true;
+            m_pickupObj.SetActive(true);
+            m_rigidbody.isKinematic = true;
         }
 
         public virtual void _Hide()
         {
+            if (!m_initialized) _Init();
+            
             Pickup.Drop();
-            PickupObj.SetActive(false);
-            Rb.velocity = Vector3.zero;
-            Rb.angularVelocity = Vector3.zero;
+            m_pickupObj.SetActive(false);
+            m_rigidbody.velocity = Vector3.zero;
+            m_rigidbody.angularVelocity = Vector3.zero;
             StoredTimestamp = Time.realtimeSinceStartup;
         }
 
         public virtual void _RunFirstPickupAfterSpawn()
         {
-            Rb.isKinematic = StartsKinematic;
+            m_rigidbody.isKinematic = m_startsKinematic;
         }
         
     }

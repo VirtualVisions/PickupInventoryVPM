@@ -12,13 +12,13 @@ namespace Vowgan.Inventory
         [Header("Synced Data")]
         [UdonSynced] public bool Active;
 
-        private VRCObjectSync objectSync;
-        
-        
-        public override void _Init()
+        private VRCObjectSync m_objectSync;
+
+
+        protected override void _Init()
         {
             base._Init();
-            objectSync = Pickup.GetComponent<VRCObjectSync>();
+            m_objectSync = Pickup.GetComponent<VRCObjectSync>();
         }
 
         public override void OnOwnershipTransferred(VRCPlayerApi player)
@@ -28,7 +28,7 @@ namespace Vowgan.Inventory
             if (player.isLocal && player.isMaster)
             {
                 _Spawn(Pickup.transform);
-                objectSync.Respawn();
+                m_objectSync.Respawn();
             }
         }
 
@@ -42,8 +42,8 @@ namespace Vowgan.Inventory
         {
             base._Spawn(point);
             Active = true;
-            objectSync.SetKinematic(true);
-            objectSync.FlagDiscontinuity();
+            m_objectSync.SetKinematic(true);
+            m_objectSync.FlagDiscontinuity();
             RequestSerialization();
         }
 
@@ -58,7 +58,7 @@ namespace Vowgan.Inventory
         public override void _RunFirstPickupAfterSpawn()
         {
             base._RunFirstPickupAfterSpawn();
-            objectSync.SetKinematic(StartsKinematic);
+            m_objectSync.SetKinematic(m_startsKinematic);
         }
     }
 }

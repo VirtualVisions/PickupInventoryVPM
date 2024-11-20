@@ -13,8 +13,10 @@ namespace Vowgan.Inventory
         public static void PostProcessScene()
         {
             PickupInventory inventory = FindObjectOfType<PickupInventory>();
+
+            InventoryItem[] items = FindObjectsByType<InventoryItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             
-            foreach (InventoryItem item in FindObjectsOfType<InventoryItem>())
+            foreach (InventoryItem item in items)
             {
                 if (!item.Pickup) continue;
 
