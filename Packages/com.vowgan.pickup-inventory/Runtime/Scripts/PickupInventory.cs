@@ -22,6 +22,7 @@ namespace Vowgan.Inventory
         public SortingMethod Sorting;
         public float SpawnInsteadOfCloseDistance = 1;
         public float HideDistance = 5;
+        public InventoryItem[] StartingItems;
         
         [Header("References")]
         public GameObject ButtonPrefab;
@@ -54,6 +55,11 @@ namespace Vowgan.Inventory
         {
             localPlayer = Networking.LocalPlayer;
             ClearMenu();
+
+            foreach (InventoryItem item in StartingItems)
+            {
+                if (localPlayer.IsOwner(item.gameObject)) _AddItem(item);
+            }
         }
         
         private void Update()
@@ -110,13 +116,13 @@ namespace Vowgan.Inventory
         {
             MenuContainer.SetActive(true);
             transform.localScale = Vector3.one * localPlayer.GetAvatarEyeHeightAsMeters();
-            transform.position = Networking.LocalPlayer.GetPosition();
-            transform.rotation = Networking.LocalPlayer.GetRotation();
+            transform.position = localPlayer.GetPosition();
+            transform.rotation = localPlayer.GetRotation();
         }
         
         public void _AddItem(InventoryItem item)
         {
-            Networking.SetOwner(Networking.LocalPlayer, item.gameObject);
+            Networking.SetOwner(localPlayer, item.gameObject);
 
             GameObject buttonObj = Instantiate(ButtonPrefab, ButtonParent);
             buttonObj.name = $"{item.name} Button";
