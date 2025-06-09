@@ -9,56 +9,65 @@ namespace Vowgan.Inventory
     public class InventoryItemSynced : InventoryItem
     {
 
-        [Header("Synced Data")]
-        [UdonSynced] public bool Active;
+        [Header("Synced Data")] 
+        [UdonSynced, SerializeField, ReadoutOnly] protected int _syncedStorageId;
 
-        private VRCObjectSync m_objectSync;
+        private VRCObjectSync _objectSync;
 
-
+        public override int _GetStorageId() => _syncedStorageId;
+        public override void _SetStorageId(int id)
+        {
+            base._SetStorageId(id);
+            _syncedStorageId = id;
+            RequestSerialization();
+            OnDeserialization();
+        } 
+        
         protected override void _Init()
         {
             base._Init();
-            m_objectSync = Pickup.GetComponent<VRCObjectSync>();
+            _objectSync = _pickup.GetComponent<VRCObjectSync>();
         }
 
         public override void OnOwnershipTransferred(VRCPlayerApi player)
         {
-            if (Active) return;
+            // Only respawn the item if it was in a player inventory when the owner left.
+            if (_syncedStorageId <= 0) return;
             
             if (player.isLocal && player.isMaster)
             {
-                _Spawn(Pickup.transform);
-                m_objectSync.Respawn();
+                _Spawn(_pickup.transform);
+                _objectSync.Respawn();
             }
         }
 
         public override void OnDeserialization()
         {
-            Pickup.gameObject.SetActive(Active);
-            if (!Active) Pickup.Drop();
+            // Send a checkup one frame later to validate for non-owners.
+            if (Menu.CurrentInventory) Menu.CurrentInventory.SendCustomEventDelayedFrames(
+                    nameof(PickupInventoryStorage._ValidateItemList), 1);
+            
+            _pickup.gameObject.SetActive(_syncedStorageId == 0);
+            if (_syncedStorageId != 0) _pickup.Drop();
         }
-
+        
         public override void _Spawn(Transform point)
         {
             base._Spawn(point);
-            Active = true;
-            m_objectSync.SetKinematic(true);
-            m_objectSync.FlagDiscontinuity();
-            RequestSerialization();
-        }
-
-        public override void _Hide()
-        {
-            base._Hide();
             
-            Active = false;
+            Networking.SetOwner(Networking.LocalPlayer, gameObject);
+            Networking.SetOwner(Networking.LocalPlayer, _objectSync.gameObject);
+            
+            _syncedStorageId = 0;
+            _objectSync.SetKinematic(true);
+            _objectSync.FlagDiscontinuity();
             RequestSerialization();
         }
 
         public override void _RunFirstPickupAfterSpawn()
         {
             base._RunFirstPickupAfterSpawn();
-            m_objectSync.SetKinematic(m_startsKinematic);
+            _objectSync.SetKinematic(_startsKinematic);
         }
     }
 }

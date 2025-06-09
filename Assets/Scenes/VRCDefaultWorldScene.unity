@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 54c71a4728b761d49a4ea4be5c16ca64, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: f95b3b08ef93f464e8858e13a72a301a, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -524,10 +524,10 @@ MonoBehaviour:
   useAssignedLayers: 0
   DynamicPrefabs: []
   DynamicMaterials:
-  - {fileID: 2100000, guid: 2cf8226cf9ba3d74187711f460b98c65, type: 2}
-  - {fileID: 2100000, guid: ef39527da4606f3428760a1c08fdd1f6, type: 2}
-  - {fileID: 2100000, guid: 86d30083632cf4a4081ebc5e08e50af6, type: 2}
-  - {fileID: 2100000, guid: 9018a3713faa885429d497404ed82611, type: 2}
+  - {fileID: 2100000, guid: 5b02b6bbb390e8a41a3211a1a0182427, type: 2}
+  - {fileID: 2100000, guid: f9a03bd5d17a45c4cadc1ee6601dddfd, type: 2}
+  - {fileID: 2100000, guid: 3bd1b15af1a223d45b636240cb2c75fe, type: 2}
+  - {fileID: 2100000, guid: 5bb253c270eabd4418f1fa9d9e7768a2, type: 2}
   LightMapsNear: []
   LightMapsFar: []
   LightMode: 0
@@ -583,6 +583,7 @@ MonoBehaviour:
   NetworkIDs: []
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  PlayerPersistence: []
   NavigationAreas: []
 --- !u!64 &7606902903243430482
 MeshCollider:
@@ -653,7 +654,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9018a3713faa885429d497404ed82611, type: 2}
+  - {fileID: 2100000, guid: 5bb253c270eabd4418f1fa9d9e7768a2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

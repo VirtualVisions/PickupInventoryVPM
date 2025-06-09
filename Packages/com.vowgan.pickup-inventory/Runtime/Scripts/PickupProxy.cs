@@ -1,29 +1,38 @@
-﻿using UdonSharp;
+﻿using UnityEngine;
 
 namespace Vowgan.Inventory
 {
-    public class PickupProxy : UdonSharpBehaviour
+    /// <summary>
+    /// A generalized proxy for the VRCPickup object.
+    /// </summary>
+    public class PickupProxy : BaseInventoryBehaviour
     {
 
+        public bool IsHeld => _isHeld;
+        
+        [Tooltip("The item this is proxying for.")]
         public InventoryItem Item;
-        public PickupInventory Inventory;
+        [Tooltip("Which inventory storage this item is waiting to drop into.")]
+        public PickupInventoryStorage TargetInventory;
         
-        public bool InsertingToInventory;
-        
+        private bool _isHeld;
 
         public override void OnPickup()
         {
-            if (!Item.JustSpawned) return;
-            Item.JustSpawned = false;
+            _isHeld = true;
             
+            if (!Item._justSpawned) return;
+            Item._justSpawned = false;
             Item._RunFirstPickupAfterSpawn();
         }
 
         public override void OnDrop()
         {
-            if (!InsertingToInventory) return;
-            InsertingToInventory = false;
-            Inventory._AddItem(Item);
+            _isHeld = false;
+            
+            if (!TargetInventory) return;
+            TargetInventory._AddItem(Item);
+            TargetInventory = null;
         }
     }
 }

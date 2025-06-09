@@ -3,35 +3,36 @@ using UnityEngine;
 using VRC.SDK3.Components;
 using VRC.SDKBase;
 
-namespace Vowgan.Inventory
+namespace Vowgan.Inventory.Demo
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class VendingMachine : UdonSharpBehaviour
     {
-        public Transform SpawnLocation;
-        public VRCObjectPool Pool;
-        public AudioSource SoundEffects;
-        public AudioClip VendSuccess;
+        [SerializeField] private Transform _spawnLocation;
+        [SerializeField] private VRCObjectPool _pool;
+        [SerializeField] private AudioSource _soundEffects;
+        [SerializeField] private AudioClip _vendSuccess;
 
-        private VRCPlayerApi m_localPlayer;
+        private VRCPlayerApi _localPlayer;
 
 
         private void Start()
         {
-            m_localPlayer = Networking.LocalPlayer;
+            _localPlayer = Networking.LocalPlayer;
         }
 
         public void _VendNewItem()
         {
-            Networking.SetOwner(m_localPlayer, Pool.gameObject);
-            GameObject itemObject = Pool.TryToSpawn();
+            Networking.SetOwner(_localPlayer, _pool.gameObject);
+            GameObject itemObject = _pool.TryToSpawn();
             if (!itemObject) return;
             
+            Networking.SetOwner(_localPlayer, itemObject.gameObject);
             InventoryItem item = itemObject.GetComponent<InventoryItem>();
             if (!item) return;
             
-            item.Pickup.transform.SetPositionAndRotation(SpawnLocation.position, SpawnLocation.rotation);
-            SoundEffects.PlayOneShot(VendSuccess);
+            item.Pickup.transform.SetPositionAndRotation(_spawnLocation.position, _spawnLocation.rotation);
+            _soundEffects.PlayOneShot(_vendSuccess);
         }
     }
 }

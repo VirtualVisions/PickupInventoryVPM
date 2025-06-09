@@ -4,65 +4,99 @@ using VRC.SDK3.Components;
 
 namespace Vowgan.Inventory
 {
-
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class InventoryItem : UdonSharpBehaviour
+    public class InventoryItem : BaseInventoryBehaviour
     {
+        public VRCPickup Pickup => _pickup;
+        public float StoredTimestamp => _storedTimestamp;
+        
+        public Sprite Icon => _icon;
+        public string ItemName => _itemName;
+        public string ItemDescription => _itemDescription;
+        public InventoryItemSize ItemSize => _itemSize;
         
         [Header("Item Settings")]
-        public Sprite Icon;
-        public string ItemName;
-        public string ItemDescription;
+        [SerializeField] private Sprite _icon;
+        [SerializeField] private string _itemName;
+        [SerializeField] private string _itemDescription;
+        [SerializeField] private InventoryItemSize _itemSize = InventoryItemSize.Medium;
 
         [Header("References")]
-        public VRCPickup Pickup;
-        public float StoredTimestamp;
-        public bool JustSpawned;
+        [SerializeField] protected VRCPickup _pickup;
 
-        protected GameObject m_pickupObj;
-        protected Rigidbody m_rigidbody;
-        protected bool m_startsKinematic;
-        protected bool m_initialized;
+        [Header("Readout")]
+        [ReadoutOnly] public bool _justSpawned;
+        [SerializeField, ReadoutOnly] protected float _storedTimestamp;
+
+        protected GameObject _pickupObj;
+        protected Rigidbody _rigidbody;
+        protected bool _startsKinematic;
+        protected bool _initialized;
+
         
         
+        [SerializeField, ReadoutOnly] protected int _storageId = 0;
+        /// <summary>
+        /// Get the ID of the inventory storage currently associated with this item.
+        /// 0 means that none are associated. Positive values are player inventories. Negative values are world inventories.
+        /// </summary>
+        public virtual int _GetStorageId() => _storageId;
+        public virtual void _SetStorageId(int id)
+        {
+            _storageId = id;
+        }
+
+        /// <summary>
+        /// Get the string name of the current size.
+        /// </summary>
+        public string _GetSizeName() => InventoryUtility._ItemSizeName(_itemSize);
+
         private void Start()
         {
-            if (!m_initialized) _Init();
+            if (!_initialized) _Init();
         }
 
         protected virtual void _Init()
         {
-            m_initialized = true;
-            m_rigidbody = Pickup.GetComponent<Rigidbody>();
-            m_startsKinematic = m_rigidbody.isKinematic;
-            m_pickupObj = Pickup.gameObject;
+            _initialized = true;
+            _rigidbody = _pickup.GetComponent<Rigidbody>();
+            _startsKinematic = _rigidbody.isKinematic;
+            _pickupObj = _pickup.gameObject;
         }
 
+        /// <summary>
+        /// Spawn this item at a given point, freezing it kinematically.
+        /// </summary>
         public virtual void _Spawn(Transform point)
         {
-            if (!m_initialized) _Init();
+            if (!_initialized) _Init();
             
-            JustSpawned = true;
-            Pickup.transform.SetPositionAndRotation(point.position, point.rotation);
-            m_pickupObj.SetActive(true);
-            m_rigidbody.isKinematic = true;
+            _justSpawned = true;
+            _pickup.transform.SetPositionAndRotation(point.position, point.rotation);
+            _pickupObj.SetActive(true);
+            _rigidbody.isKinematic = true;
         }
 
+        /// <summary>
+        /// Hide this item after being stored into an inventory storage.
+        /// </summary>
         public virtual void _Hide()
         {
-            if (!m_initialized) _Init();
+            if (!_initialized) _Init();
             
-            Pickup.Drop();
-            m_pickupObj.SetActive(false);
-            m_rigidbody.velocity = Vector3.zero;
-            m_rigidbody.angularVelocity = Vector3.zero;
-            StoredTimestamp = Time.realtimeSinceStartup;
+            _pickup.Drop();
+            _pickupObj.SetActive(false);
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+            _storedTimestamp = Time.realtimeSinceStartup;
         }
 
+        /// <summary>
+        /// Clear the temporary kinematic state assigned from spawning.
+        /// </summary>
         public virtual void _RunFirstPickupAfterSpawn()
         {
-            m_rigidbody.isKinematic = m_startsKinematic;
+            _rigidbody.isKinematic = _startsKinematic;
         }
-        
     }
 }

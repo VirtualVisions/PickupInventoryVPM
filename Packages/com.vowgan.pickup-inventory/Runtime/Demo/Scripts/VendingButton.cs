@@ -1,17 +1,18 @@
 ﻿
 using UdonSharp;
+using UnityEngine;
 
-namespace Vowgan.Inventory
+namespace Vowgan.Inventory.Demo
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class VendingButton : UdonSharpBehaviour
     {
 
-        public VendingMachine VendingMachine;
+        [SerializeField] private VendingMachine _vendingMachine;
 
         public override void Interact()
         {
-            VendingMachine._VendNewItem();
+            _vendingMachine._VendNewItem();
         }
     }
 }

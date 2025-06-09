@@ -1,42 +1,40 @@
 ﻿using UdonSharp;
+using UnityEngine;
 using VRC.SDKBase;
 
-namespace Vowgan.Inventory
+namespace Vowgan.Inventory.Demo
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class AddItemsToInventory : UdonSharpBehaviour
     {
-        
-        public InventoryItem[] Items;
-        public PickupInventory Inventory;
-        
-        [UdonSynced] public bool Used;
-        
+        [Tooltip("Items to be added to the inventory.")]
+        [SerializeField] private InventoryItem[] _items;
+        [Tooltip("Which storage to store items inside.")]
+        [SerializeField] private PickupInventoryStorage _inventoryStorage;
+        [UdonSynced, SerializeField, ReadoutOnly] private bool _used;
         
         private void Start()
         {
-            foreach (InventoryItem item in Items)
+            // Hide the target items by default if you're the owner.
+            foreach (InventoryItem item in _items)
             {
                 if (Networking.LocalPlayer.IsOwner(item.gameObject))
-                {
                     item._Hide();
-                }
             }
         }
 
         public override void OnDeserialization()
         {
-            DisableInteractive = Used;
+            // Disable the interaction if the button has already been pressed.
+            DisableInteractive = _used;
         }
 
         public override void Interact()
         {
-            foreach (InventoryItem item in Items)
-            {
-                Inventory._AddItem(item);
-            }
+            foreach (InventoryItem item in _items)
+                _inventoryStorage._AddItem(item);
 
-            Used = true;
+            _used = true;
             RequestSerialization();
             OnDeserialization();
         }

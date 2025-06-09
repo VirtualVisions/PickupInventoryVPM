@@ -3247,10 +3247,10 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 3735801627118767453}
-  SpawnLocation: {fileID: 6097196926324658889}
-  Pool: {fileID: 1577651139496303722}
-  SoundEffects: {fileID: 8818499057410083169}
-  VendSuccess: {fileID: 8300000, guid: 84d509719fe4ba3429fed0127308330c, type: 3}
+  _spawnLocation: {fileID: 6097196926324658889}
+  _pool: {fileID: 1577651139496303722}
+  _soundEffects: {fileID: 8818499057410083169}
+  _vendSuccess: {fileID: 8300000, guid: 84d509719fe4ba3429fed0127308330c, type: 3}
 --- !u!114 &3735801627118767453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3332,7 +3332,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 5200887713323788809}
-  VendingMachine: {fileID: 1775002868753620840}
+  _vendingMachine: {fileID: 1775002868753620840}
 --- !u!114 &5200887713323788809
 MonoBehaviour:
   m_ObjectHideFlags: 0
